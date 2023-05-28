@@ -8,3 +8,4 @@ openai
 youtube_transcript_api
 pandas
 langchain
+python-dotenv
