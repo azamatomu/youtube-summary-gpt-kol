@@ -29,8 +29,8 @@ client_secrets_file = "client_secret_desktopapp.json"
 # Get credentials and create an API client
 flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
     client_secrets_file, scopes)
-# credentials = flow.run_console()
-credentials = flow.run_local_server(port=0)
+credentials = flow.run_console()
+# credentials = flow.run_local_server(port=0)
 
 YOUTUBE = googleapiclient.discovery.build(
     api_service_name, api_version, credentials=credentials)
