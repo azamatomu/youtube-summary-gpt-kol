@@ -102,14 +102,24 @@ def get_video_transcript(videoId):
     if tmp_text is not None:
         return text
 
-def save_data(videoId, comment, transcript, app_version):
-	# with open('db.csv', 'r') as file:
-	file = 'db.csv'
-	db_df = pd.read_csv(file)
-	row = [{'videoId': videoId, 'transcript': transcript, 'summary': comment, 'summary_version': app_version}]
-	pd.concat([db_df, pd.DataFrame(row)]).to_csv(file, index=False)
+def load_data(api_name):
+    if not os.path.exists(api_name):
+        return None
 
-	return
+    with open(api_name, 'r') as file:
+        return pd.read_csv(file)
+
+
+def save_data(videoId, comment, transcript, app_version):    
+    file_name = 'db.csv'
+    db = load_data(file_name)
+        
+    row = pd.DataFrame([{'videoId': videoId, 'transcript': transcript, 'summary': comment, 'summary_version': app_version}])
+    if not db:
+        pd.concat([db, row]).to_csv(file_name, index=False)
+    else:
+        row.to_csv(file_name, index=False)
+    return
 
 def insert_comment(videoId, youtube):
     transcript = get_video_transcript(videoId)
