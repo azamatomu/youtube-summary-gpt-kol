@@ -39,6 +39,16 @@ def save_credentials(
     with open(pickle_file, 'wb') as token:
         pickle.dump(cred, token)
 
+def create_client_secret(client_secret_file):
+    secrets_content = os.getenv('SECRETS_JSON')
+    secrets_json = json.loads(secrets_content)
+    with open(client_secret_file, "w") as file:
+        file.write(secrets_json)
+    return
+    # json.dumps(secrets_json)
+    # client_secret_file = secrets
+
+
 def create_service(
         client_secret_file, scopes,
         api_name = 'youtube',
@@ -46,10 +56,6 @@ def create_service(
     print(client_secret_file, scopes,
         api_name, api_version,
         sep = ', ')
-    
-    secrets_json = os.getenv('SECRETS_JSON')
-    secrets = json.loads(secrets_json)
-    client_secret_file = secrets
 
     cred = load_credentials(api_name, api_version)
 
@@ -57,6 +63,9 @@ def create_service(
         if cred and cred.expired and cred.refresh_token:
             cred.refresh(Request())
         else:
+            if not os.path.exists(create_client_secret):
+                create_client_secret(client_secret_file)
+                
             flow = InstalledAppFlow.from_client_secrets_file(
                     client_secret_file, scopes)
             cred = flow.run_console()
