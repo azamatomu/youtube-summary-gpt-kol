@@ -63,9 +63,9 @@ def create_service(
         if cred and cred.expired and cred.refresh_token:
             cred.refresh(Request())
         else:
-            if not os.path.exists(create_client_secret):
+            if not os.path.exists(client_secret_file):
                 create_client_secret(client_secret_file)
-                
+
             flow = InstalledAppFlow.from_client_secrets_file(
                     client_secret_file, scopes)
             cred = flow.run_console()
