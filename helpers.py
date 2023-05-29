@@ -1,4 +1,5 @@
 import os
+import json
 import pickle
 
 import pandas as pd
@@ -45,6 +46,10 @@ def create_service(
     print(client_secret_file, scopes,
         api_name, api_version,
         sep = ', ')
+    
+    secrets_json = os.getenv('SECRETS_JSON')
+    secrets = json.loads(secrets_json)
+    client_secret_file = secrets
 
     cred = load_credentials(api_name, api_version)
 
