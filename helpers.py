@@ -40,10 +40,27 @@ def save_credentials(
         pickle.dump(cred, token)
 
 def create_client_secret(client_secret_file):
-    secrets_content = os.getenv('SECRETS_JSON')
-    secrets_json = json.loads(secrets_content)
-    with open(client_secret_file, "w") as file:
-        file.write(secrets_json)
+    with open(client_secret_file, 'r') as file:
+        json_data = json.load(file)
+
+    # Replace "undefined" values with corresponding environment variables
+    for key, value in json_data['installed'].items():
+        if value == "undefined":
+            env_var = os.getenv(key.upper())
+            if env_var is not None:
+                json_data['installed'][key] = env_var
+
+    # Save the modified JSON back to 'a.json'
+    with open(client_secret_file, 'w') as file:
+        json.dump(json_data, file)
+
+    print(f"{client_secret_file} file has been updated.")
+
+    # secrets_content = os.getenv('SECRETS_JSON')
+    # secrets_json = json.loads(secrets_content)
+    # with open(client_secret_file, "w") as file:
+    #     file.write(secrets_json)
+
     return
     # json.dumps(secrets_json)
     # client_secret_file = secrets
@@ -57,6 +74,7 @@ def create_service(
         api_name, api_version,
         sep = ', ')
 
+    print('Loading credentials...')
     cred = load_credentials(api_name, api_version)
 
     if not cred or not cred.valid:
@@ -64,6 +82,8 @@ def create_service(
             cred.refresh(Request())
         else:
             if not os.path.exists(client_secret_file):
+                print('Client secret file does not exist.')
+                print('Creating it from SECRETS_JSON env variable.')
                 create_client_secret(client_secret_file)
 
             flow = InstalledAppFlow.from_client_secrets_file(

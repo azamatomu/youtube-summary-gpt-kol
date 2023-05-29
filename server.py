@@ -32,8 +32,7 @@ APP_VERSION = 0.1
 
 # YOUTUBE = googleapiclient.discovery.build(
 #     api_service_name, api_version, credentials=credentials)
-client_secrets_file = "client_secret_desktopapp.json"
-youtube = create_service(client_secrets_file, ["https://www.googleapis.com/auth/youtube.force-ssl"])
+youtube = create_service("client_secret_desktopapp.json", ["https://www.googleapis.com/auth/youtube.force-ssl"])
 
 app = Flask(__name__)
 
